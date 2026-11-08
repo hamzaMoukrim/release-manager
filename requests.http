@@ -1,0 +1,54 @@
+
+### Deploy Service A v1
+POST http://localhost:8080/deploy
+Content-Type: application/json
+
+{
+  "name": "Service A",
+  "version": 1
+}
+
+### Deploy Service B v1
+POST http://localhost:8080/deploy
+Content-Type: application/json
+
+{
+  "name": "Service B",
+  "version": 1
+}
+
+### Upgrade Service A to v2
+POST http://localhost:8080/deploy
+Content-Type: application/json
+
+{
+  "name": "Service A",
+  "version": 2
+}
+
+### Duplicate deployment
+POST http://localhost:8080/deploy
+Content-Type: application/json
+
+{
+  "name": "Service B",
+  "version": 1
+}
+
+### Get services at system version 2
+GET http://localhost:8080/services?systemVersion=2
+
+### Get services at system version 3
+GET http://localhost:8080/services?systemVersion=3
+
+### Invalid deployment
+POST http://localhost:8080/deploy
+Content-Type: application/json
+
+{
+  "name": "",
+  "version": -1
+}
+
+### Unknown system version
+GET http://localhost:8080/services?systemVersion=999

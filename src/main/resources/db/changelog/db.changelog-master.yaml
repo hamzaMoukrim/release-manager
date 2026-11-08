@@ -1,0 +1,142 @@
+
+databaseChangeLog:
+
+  # Create system_state table
+  - changeSet:
+      id: create-system-state
+      author: release-manager
+      changes:
+        - createTable:
+            tableName: system_state
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_system_state
+                    nullable: false
+
+              - column:
+                  name: current_version
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+  # Create current_deployments table
+  - changeSet:
+      id: create-current-deployments
+      author: release-manager
+      changes:
+        - createTable:
+            tableName: current_deployments
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_current_deployments
+                    nullable: false
+
+              - column:
+                  name: service_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: service_version
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: current_deployments
+            columnNames: service_name
+            constraintName: uk_current_deployment_service_name
+
+  # Create deployment_snapshots table
+  - changeSet:
+      id: create-deployment-snapshots
+      author: release-manager
+      changes:
+        - createTable:
+            tableName: deployment_snapshots
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_deployment_snapshots
+                    nullable: false
+
+              - column:
+                  name: system_version
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: service_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: service_version
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: deployment_snapshots
+            columnNames: system_version, service_name
+            constraintName: uk_snapshot_system_version_service
+
+  # Initialize global system version
+  - changeSet:
+      id: initialize-system-state
+      author: release-manager
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/insert-system-state.sql
+            encoding: UTF-8
+            splitStatements: true
+            stripComments: true
